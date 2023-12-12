@@ -15,14 +15,14 @@ export default function App() {
 			<AuthProvider>
 				<BrowserRouter>
 					<Routes>
-						<Route path="/login" element={<Login />} />
-						<Route path="/register" element={<Register />} />
-						<Route path="/dashboard" element={<Dashboard />} />
 						<Route element={<DefaultLayout />}>
 							<Route path="/" element={<Home />} />
+							<Route path="/login" element={<Login />} />
+							<Route path="/register" element={<Register />} />
+							<Route path="/blog" element={<Blog />} />
+							<Route path="/blog/:slug" element={<Show />} />
 							<Route element={<ProtectedRoute />}>
-								<Route path="/blog" element={<Blog />} />
-								<Route path="/blog/:slug" element={<Show />} />
+								<Route path="/dashboard" element={<Dashboard />} />
 							</Route>
 						</Route>
 					</Routes>

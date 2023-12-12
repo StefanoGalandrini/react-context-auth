@@ -8,15 +8,21 @@ export function AuthProvider({children}) {
 	);
 
 	function authenticateUser(email, password) {
-		const user = {email: "stefano@email.it", password: "password"};
+		const user = {
+			name: "Stefano",
+			lastName: "Galandrini",
+			email: "stefano@email.it",
+			password: "password",
+		};
 
 		if (email === user.email && password === user.password) {
 			setIsLogged(true);
 			const fakeToken = "fake-jwt-token";
 			const userData = {
-				email: email,
-				name: "NomeUtente",
-				lastName: "CognomeUtente",
+				name: user.name,
+				lastName: user.lastName,
+				email: user.email,
+				password: user.password,
 			};
 			localStorage.setItem("user", JSON.stringify({userData}));
 			localStorage.setItem("token", fakeToken);
