@@ -13,7 +13,12 @@ export function AuthProvider({children}) {
 		if (email === user.email && password === user.password) {
 			setIsLogged(true);
 			const fakeToken = "fake-jwt-token";
-			localStorage.setItem("user", JSON.stringify({email}));
+			const userData = {
+				email: email,
+				name: "NomeUtente",
+				lastName: "CognomeUtente",
+			};
+			localStorage.setItem("user", JSON.stringify({userData}));
 			localStorage.setItem("token", fakeToken);
 			return true;
 		}
