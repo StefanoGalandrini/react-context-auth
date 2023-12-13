@@ -35,15 +35,40 @@ export function AuthProvider({children}) {
 		localStorage.setItem("token", token);
 	}
 
-	async function fetchLoggedUser() {
-		const {user} = await fetchApi("/me");
-		setUser(user);
-		setIsLogged(true);
+	// async function fetchLoggedUser() {
+	// 	const {user} = await fetchApi("/me");
+	// 	setUser(user);
+	// 	setIsLogged(true);
+	// }
+
+	async function verifyToken() {
+		const storedToken = localStorage.getItem("token");
+		if (!storedToken) {
+			handleLogout();
+			return;
+		}
+
+		try {
+			const response = await fetchApi("/verify-token", "POST", {
+				token: storedToken,
+			});
+			if (response.user) {
+				setUser(response.user);
+				setIsLogged(true);
+				navigate("/dashboard");
+			} else {
+				// Gestisci il caso in cui il token non è valido
+				handleLogout();
+			}
+		} catch (error) {
+			console.error("Errore nella verifica del token:", error);
+			handleLogout();
+		}
 	}
 
 	async function initializeData() {
 		if (token) {
-			await fetchLoggedUser();
+			await verifyToken();
 		}
 		setInitComplete(true);
 	}
