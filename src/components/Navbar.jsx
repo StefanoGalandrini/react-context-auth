@@ -1,4 +1,4 @@
-import {NavLink, Navigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {useAuth} from "../contexts/AuthContext";
 
 function NavbarLink({href, children}) {
@@ -12,11 +12,12 @@ function NavbarLink({href, children}) {
 }
 
 function Navbar() {
-	const {isLogged, logout} = useAuth();
+	const {isLogged, handleLogout} = useAuth();
+	const navigate = useNavigate();
 
-	function handleLogout() {
-		logout();
-		Navigate("/");
+	function logout() {
+		handleLogout();
+		navigate("/");
 	}
 
 	return (
@@ -42,15 +43,10 @@ function Navbar() {
 								</li>
 								<li>
 									{isLogged ? (
-										<div onClick={handleLogout}>
+										<div onClick={logout}>
 											<NavbarLink href="/">Logout</NavbarLink>
 										</div>
 									) : (
-										// <button
-										// 	onClick={handleLogout}
-										// 	className="block py-3 px-4 min-w-[80px] text-center rounded-md transition-all duration-300 hover:bg-gray-100 hover:text-primary">
-										// 	Logout
-										// </button>
 										<NavbarLink href="/login">Login</NavbarLink>
 									)}
 								</li>
