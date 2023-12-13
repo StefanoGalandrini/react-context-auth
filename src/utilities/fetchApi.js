@@ -21,8 +21,8 @@ async function fetchApi(path, method = "GET", body = null)
 				localStorage.removeItem("token");
 				window.location = "/login";
 			}
-
-			throw new Error(data.message ?? "A causa di un errore non è possibile eseguire l'operazione richiesta.");
+			console.log(data);
+			throw new Error(data.error ?? "A causa di un errore non è possibile eseguire l'operazione richiesta.");
 		}
 
 		return data;

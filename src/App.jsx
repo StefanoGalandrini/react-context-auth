@@ -19,10 +19,10 @@ export default function App() {
 							<Route index path="/" element={<Home />} />
 							<Route path="/login" element={<Login />} />
 							<Route path="/register" element={<Register />} />
-							<Route path="/blog" element={<Blog />} />
-							<Route path="/blog/:slug" element={<Show />} />
 							<Route element={<ProtectedRoute />}>
 								<Route path="/dashboard" element={<Dashboard />} />
+								<Route path="/blog" element={<Blog />} />
+								<Route path="/blog/:slug" element={<Show />} />
 							</Route>
 						</Route>
 					</Routes>

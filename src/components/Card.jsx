@@ -13,9 +13,7 @@ function Card({
 		: "Nessuna categoria";
 
 	return (
-		<div
-			className="container mx-auto mt-12 flex justify-center text-orange-300 cursor-pointer"
-			onClick={onArticleClick}>
+		<div className="container mx-auto mt-12 flex justify-center text-orange-300">
 			<div className="w-full">
 				{article && (
 					<div className="grid grid-cols-8 gap-3 justify-center items-center px-4 mb-2">
@@ -29,21 +27,32 @@ function Card({
 						<div className="text-center font-bold">Operazioni:</div>
 					</div>
 				)}
+
 				<div
 					className="text-white container mx-auto grid grid-cols-8 gap-3 justify-center items-center bg-gray-800 px-4 py-2 rounded-md mb-2 text-sm"
 					key={article.id}>
 					<div className="text-left">{article.title}</div>
 					<div className="text-left">{article.author}</div>
 					<div className="text-left">{article.content}</div>
-					<img
-						className="w-40 rounded-md border-1 border-gray-300"
-						src={
-							article.image
-								? `${serverUrl}/${article.image.replace(/\\/g, "/")}`
-								: `${serverUrl}/uploads/missing-image.jpg`
-						}
-						alt="Article image"
-					/>
+					<div
+						onClick={onArticleClick}
+						className="flex flex-col gap-2 justify-center items-center cursor-pointer">
+						<img
+							className="w-40 rounded-md border-1 border-gray-300"
+							src={
+								article.image
+									? `${serverUrl}/${article.image.replace(/\\/g, "/")}`
+									: `${serverUrl}/uploads/missing-image.jpg`
+							}
+							alt="Article image"
+						/>
+						<span>
+							<i class="text-violet-400 fa-regular fa-circle-up"></i>
+							<span className="text-violet-400 ml-2">
+								Clicca per i dettagli
+							</span>
+						</span>
+					</div>
 					<div className="text-left">{articleCategory}</div>
 					<div className="text-center">
 						{articleTags.map((tagName, index) => (
@@ -59,8 +68,6 @@ function Card({
 					<div className="flex items-center justify-center space-x-2">
 						<input
 							type="checkbox"
-							// name="published"
-							// id="published"
 							checked={article.published}
 							onChange={() => handleChangePublished(article.id)}
 						/>

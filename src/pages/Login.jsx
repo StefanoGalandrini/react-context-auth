@@ -15,17 +15,11 @@ export default function Login() {
 
 	async function handleSubmit(event) {
 		event.preventDefault();
-
+		setError(null);
 		try {
-			console.log(formData);
 			const response = await fetchApi("/login", "POST", formData);
 			handleLoginOrRegistration(response);
-
-			if (!error) {
-				navigate("/dashboard");
-			} else {
-				navigate("/");
-			}
+			navigate("/dashboard");
 		} catch (error) {
 			setError(error.message);
 		}
@@ -36,6 +30,7 @@ export default function Login() {
 			<form
 				onSubmit={handleSubmit}
 				className="bg-gray-300 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+				{error && <div className="text-red-500 text-center">{error}</div>}{" "}
 				<div className="mb-4">
 					<label
 						className="block text-gray-700 text-sm font-bold mb-2"
