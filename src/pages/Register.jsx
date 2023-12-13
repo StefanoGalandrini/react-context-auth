@@ -1,36 +1,38 @@
 import {useState} from "react";
+import {useAuth} from "../contexts/AuthContext";
 import {useNavigate} from "react-router-dom";
+import fetchApi from "../utilities/fetchApi";
+import {handleInputChange} from "../utilities/handleInputChange";
 
 export default function Register() {
-	const [name, setName] = useState("");
-	const [lastname, setLastname] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [formData, setFormData] = useState({
+		name: "",
+		email: "",
+		password: "",
+		role: "user",
+	});
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const navigate = useNavigate();
+	const {handleLoginOrRegistration} = useAuth();
+	const [error, setError] = useState("");
 
 	async function handleSubmit(event) {
 		event.preventDefault();
+		setError(null);
 
-		console.log("Dati di Registrazione:", {
-			name,
-			lastname,
-			email,
-			password,
-		});
+		if (formData.password !== confirmPassword) {
+			setError("Le password non corrispondono");
+			return;
+		}
 
-		if (password === confirmPassword) {
-			// Implementa la logica di registrazione
-
-			// salva in localStorage i dati dell'utente
-			const fakeToken = "fake-jwt-token";
-			const userData = {name, lastname, email};
-			localStorage.setItem("token", fakeToken);
-			localStorage.setItem("user", JSON.stringify(userData));
-			// reindirizza l'utente alla dashboard
-			navigate("/dashboard");
-		} else {
-			throw new Error("Le password non corrispondono");
+		try {
+			const response = await fetchApi("/users", "POST", formData);
+			if (response && response.token) {
+				handleLoginOrRegistration(response);
+				navigate("/dashboard");
+			}
+		} catch (error) {
+			setError(error.message);
 		}
 	}
 
@@ -39,22 +41,24 @@ export default function Register() {
 			<form
 				onSubmit={handleSubmit}
 				className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+				{error && <div className="text-red-500">{error}</div>}
 				{/* Campo Nome */}
 				<div className="mb-4">
 					<label
 						className="block text-gray-700 text-sm font-bold mb-2"
 						htmlFor="name">
-						Nome
+						Nome e Cognome
 					</label>
 					<input
-						onChange={(e) => setName(e.target.value)}
+						onChange={(e) => handleInputChange(e, "name", setFormData)}
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						id="name"
 						type="text"
+						name="name"
 						placeholder="Inserisci il tuo nome"
 					/>
 				</div>
-				{/* Campo Cognome */}
+				{/* Campo Cognome
 				<div className="mb-4">
 					<label
 						className="block text-gray-700 text-sm font-bold mb-2"
@@ -68,7 +72,7 @@ export default function Register() {
 						type="text"
 						placeholder="Inserisci il tuo cognome"
 					/>
-				</div>
+				</div> */}
 				{/* Campo Email */}
 				<div className="mb-4">
 					<label
@@ -77,10 +81,11 @@ export default function Register() {
 						Email
 					</label>
 					<input
-						onChange={(e) => setEmail(e.target.value)}
+						onChange={(e) => handleInputChange(e, "email", setFormData)}
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						id="email"
 						type="email"
+						name="email"
 						placeholder="Inserisci la tua email"
 					/>
 				</div>
@@ -92,10 +97,11 @@ export default function Register() {
 						Password
 					</label>
 					<input
-						onChange={(e) => setPassword(e.target.value)}
+						onChange={(e) => handleInputChange(e, "password", setFormData)}
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						id="password"
 						type="password"
+						name="password"
 						placeholder="Inserisci una password"
 					/>
 				</div>
@@ -110,6 +116,7 @@ export default function Register() {
 						onChange={(e) => setConfirmPassword(e.target.value)}
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						id="confirm-password"
+						name="confirm-password"
 						type="password"
 						placeholder="Conferma la tua password"
 					/>
