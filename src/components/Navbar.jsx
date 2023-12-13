@@ -29,14 +29,20 @@ function Navbar() {
 					</div>
 
 					<div className="text-fuchsia-900">
-						<p className="text-3xl font-bold">SG BLOG - Web Developing Hate</p>
+						<p className="text-3xl font-bold">
+							Spread some Web Developing hate
+						</p>
 					</div>
 
 					<div>
 						{
 							<ul className="flex gap-5">
 								<li>
-									<NavbarLink href="/">Home</NavbarLink>
+									{isLogged ? (
+										<NavbarLink href="/dashboard">Dashboard</NavbarLink>
+									) : (
+										<NavbarLink href="/">Home</NavbarLink>
+									)}
 								</li>
 								<li>
 									<NavbarLink href="/Blog">Blog</NavbarLink>

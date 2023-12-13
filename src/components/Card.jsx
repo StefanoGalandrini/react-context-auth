@@ -47,7 +47,7 @@ function Card({
 							alt="Article image"
 						/>
 						<span>
-							<i class="text-violet-400 fa-regular fa-circle-up"></i>
+							<i className="text-violet-400 fa-regular fa-circle-up"></i>
 							<span className="text-violet-400 ml-2">
 								Clicca per i dettagli
 							</span>
