@@ -12,11 +12,11 @@ import Dashboard from "./pages/Dashboard.jsx";
 export default function App() {
 	return (
 		<>
-			<AuthProvider>
-				<BrowserRouter>
+			<BrowserRouter>
+				<AuthProvider>
 					<Routes>
 						<Route element={<DefaultLayout />}>
-							<Route path="/" element={<Home />} />
+							<Route index path="/" element={<Home />} />
 							<Route path="/login" element={<Login />} />
 							<Route path="/register" element={<Register />} />
 							<Route path="/blog" element={<Blog />} />
@@ -26,8 +26,8 @@ export default function App() {
 							</Route>
 						</Route>
 					</Routes>
-				</BrowserRouter>
-			</AuthProvider>
+				</AuthProvider>
+			</BrowserRouter>
 		</>
 	);
 }

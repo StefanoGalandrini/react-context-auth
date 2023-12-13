@@ -1,22 +1,35 @@
 import {useState} from "react";
 import {useAuth} from "../contexts/AuthContext";
 import {useNavigate} from "react-router-dom";
+import fetchApi from "../utilities/fetchApi";
+import {handleInputChange} from "../utilities/handleInputChange";
 
 export default function Login() {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const {authenticateUser} = useAuth();
+	const [formData, setFormData] = useState({
+		email: "",
+		password: "",
+	});
 	const navigate = useNavigate();
+	const {handleLoginOrRegistration} = useAuth();
+	const [error, setError] = useState("");
 
-	const handleSubmit = async (event) => {
+	async function handleSubmit(event) {
 		event.preventDefault();
-		const success = authenticateUser(email, password);
-		if (success) {
-			navigate("/dashboard");
-		} else {
-			navigate("/");
+
+		try {
+			console.log(formData);
+			const response = await fetchApi("/login", "POST", formData);
+			handleLoginOrRegistration(response);
+
+			if (!error) {
+				navigate("/dashboard");
+			} else {
+				navigate("/");
+			}
+		} catch (error) {
+			setError(error.message);
 		}
-	};
+	}
 
 	return (
 		<div className="flex justify-center items-center h-screen">
@@ -30,10 +43,11 @@ export default function Login() {
 						Email
 					</label>
 					<input
-						onChange={(e) => setEmail(e.target.value)}
+						onChange={(e) => handleInputChange(e, "email", setFormData)}
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						id="email"
 						type="email"
+						name="email"
 						placeholder="Enter your email"
 					/>
 				</div>
@@ -44,10 +58,11 @@ export default function Login() {
 						Password
 					</label>
 					<input
-						onChange={(e) => setPassword(e.target.value)}
+						onChange={(e) => handleInputChange(e, "password", setFormData)}
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						id="password"
 						type="password"
+						name="password"
 						placeholder="Enter your password"
 					/>
 				</div>

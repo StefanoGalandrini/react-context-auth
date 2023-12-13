@@ -1,8 +1,8 @@
 import Navbar from "../components/Navbar.jsx";
+import {useAuth} from "../contexts/AuthContext.jsx";
 
 function Dashboard() {
-	const userString = localStorage.getItem("user");
-	const user = userString ? JSON.parse(userString).userData : null;
+	const user = useAuth();
 
 	return (
 		<div className="flex flex-col justify-center items-center h-[85vh] text-white">

@@ -1,44 +1,66 @@
-import {createContext, useContext, useState} from "react";
+import {createContext, useContext, useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
+import fetchApi from "../utilities/fetchApi";
 
 const AuthContext = createContext();
 
 export function AuthProvider({children}) {
-	const [isLogged, setIsLogged] = useState(
-		localStorage.getItem("token") !== null,
+	const [user, setUser] = useState(null);
+	const [token, setToken] = useState(
+		() => localStorage.getItem("token") ?? null,
 	);
+	const [isLogged, setIsLogged] = useState(null);
+	const [initComplete, setInitComplete] = useState(false);
+	const navigate = useNavigate();
 
-	function authenticateUser(email, password) {
-		const user = {
-			name: "Stefano",
-			lastName: "Galandrini",
-			email: "stefano@email.it",
-			password: "password",
-		};
-
-		if (email === user.email && password === user.password) {
-			setIsLogged(true);
-			const fakeToken = "fake-jwt-token";
-			const userData = {
-				name: user.name,
-				lastName: user.lastName,
-				email: user.email,
-				password: user.password,
-			};
-			localStorage.setItem("user", JSON.stringify({userData}));
-			localStorage.setItem("token", fakeToken);
-			return true;
-		}
-		return false;
+	function handleLoginOrRegistration(response) {
+		setUser(response.user);
+		setIsLogged(true);
+		storeToken(response.token);
 	}
 
-	function logout() {
+	function handleLogout() {
+		setUser(null);
+		storeToken(null);
 		setIsLogged(false);
-		localStorage.removeItem("user");
 		localStorage.removeItem("token");
+
+		setTimeout(() => {
+			navigate("/");
+		});
 	}
+
+	function storeToken(token) {
+		setToken(token);
+		localStorage.setItem("token", token);
+	}
+
+	async function fetchLoggedUser() {
+		const {user} = await fetchApi("/me");
+		setUser(user);
+		setIsLogged(true);
+	}
+
+	async function initializeData() {
+		if (token) {
+			await fetchLoggedUser();
+		}
+		setInitComplete(true);
+	}
+
+	useEffect(() => {
+		initializeData();
+	}, []);
 
 	return (
-		<AuthContext.Provider value={{isLogged, authenticateUser, logout}}>
+		<AuthContext.Provider
+			value={{
+				user,
+				isLogged,
+				handleLoginOrRegistration,
+				handleLogout,
+				initComplete,
+			}}>
 			{children}
 		</AuthContext.Provider>
 	);
